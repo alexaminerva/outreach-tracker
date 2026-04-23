@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HouseAccount — Outreach Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ha-navy:  #1C3A4A;
+    --ha-blue:  #6B9FBF;
+    --ha-light: #EEF4F8;
+    --ha-white: #FFFFFF;
+    --ha-font:  'Inter', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--ha-font); background: var(--ha-light); color: #1a2a34; font-size: 14px; line-height: 1.6; }
+
+  .site-header {
+    background: var(--ha-navy); padding: 18px 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .logo { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.3px; display: flex; align-items: center; gap: 10px; }
+  .logo-mark { width: 28px; height: 28px; background: var(--ha-blue); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; }
+  .header-sub { color: rgba(255,255,255,0.55); font-size: 13px; font-weight: 400; }
+
+  .tabs-bar {
+    background: #fff; border-bottom: 1px solid #dce6ed;
+    display: flex; padding: 0 32px; gap: 4px;
+    position: sticky; top: 65px; z-index: 99;
+  }
+  .tab-btn {
+    padding: 14px 20px; font-size: 13px; font-weight: 600; color: #6b7c88;
+    background: none; border: none; border-bottom: 3px solid transparent;
+    cursor: pointer; transition: color 0.15s, border-color 0.15s; white-space: nowrap;
+    font-family: var(--ha-font);
+  }
+  .tab-btn:hover { color: var(--ha-navy); }
+  .tab-btn.active { color: var(--ha-navy); border-bottom-color: var(--ha-blue); }
+
+  .tab-panel { display: none; padding: 32px; max-width: 1200px; margin: 0 auto; }
+  .tab-panel.active { display: block; }
+
+  /* Stats */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .stat-card { background: #fff; border-radius: 10px; border: 1px solid #dce6ed; padding: 18px; text-align: center; box-shadow: 0 1px 4px rgba(28,58,74,0.07); }
+  .stat-number { font-size: 30px; font-weight: 800; color: var(--ha-navy); line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: #8fa8b8; }
+
+  /* Pipeline bar */
+  .pipeline-section { background: #fff; border-radius: 10px; border: 1px solid #dce6ed; padding: 20px 24px; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(28,58,74,0.07); }
+  .pipeline-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ha-blue); margin-bottom: 14px; }
+  .pipeline-stages { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pipeline-stage { flex: 1; min-width: 80px; text-align: center; background: #f8fafc; border-radius: 8px; padding: 10px 8px; border: 1px solid #eef2f5; }
+  .pipeline-stage-count { font-size: 22px; font-weight: 800; color: var(--ha-navy); line-height: 1; }
+  .pipeline-stage-label { font-size: 10px; font-weight: 600; color: #8fa8b8; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 3px; }
+
+  /* Market filter */
+  .market-filter { display: flex; gap: 6px; margin-bottom: 20px; }
+  .mf-btn {
+    padding: 6px 16px; border-radius: 99px; font-size: 12px; font-weight: 600;
+    border: 1.5px solid #dce6ed; background: #fff; color: #6b7c88;
+    cursor: pointer; font-family: var(--ha-font); transition: all 0.12s;
+  }
+  .mf-btn:hover { border-color: var(--ha-blue); color: var(--ha-navy); }
+  .mf-btn.active { background: var(--ha-navy); color: #fff; border-color: var(--ha-navy); }
+
+  /* Table */
+  .table-wrap { background: #fff; border-radius: 10px; border: 1px solid #dce6ed; overflow: hidden; box-shadow: 0 1px 4px rgba(28,58,74,0.07); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--ha-navy); }
+  thead th { padding: 11px 14px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: rgba(255,255,255,0.7); white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid #eef2f5; transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #f8fafc; }
+  td { padding: 12px 14px; vertical-align: top; }
+
+  .td-company { font-weight: 700; color: var(--ha-navy); white-space: nowrap; }
+  .td-contact { color: #444; }
+  .td-contact-title { font-size: 11px; color: #8fa8b8; margin-top: 1px; }
+  .td-notes { font-size: 12px; color: #6b7c88; max-width: 220px; }
+  .td-date { font-size: 12px; color: #6b7c88; white-space: nowrap; }
+  .td-actions { white-space: nowrap; text-align: right; }
+
+  .market-badge {
+    display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px;
+    border-radius: 99px; white-space: nowrap; letter-spacing: 0.3px;
+  }
+  .market-TX { background: #fef3c7; color: #92400e; }
+  .market-FL { background: #d1fae5; color: #065f46; }
+  .market-NJ { background: #ede9fe; color: #4c1d95; }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; padding: 3px 9px;
+    border-radius: 99px; white-space: nowrap; cursor: pointer;
+    border: none; font-family: var(--ha-font);
+    transition: opacity 0.12s;
+  }
+  .status-pill:hover { opacity: 0.8; }
+  .s-not-started    { background: #f1f5f9; color: #64748b; }
+  .s-researching    { background: #e0f2fe; color: #0369a1; }
+  .s-contacted      { background: #fff8e1; color: #b45309; }
+  .s-in-conversation{ background: #fff0e6; color: #c2410c; }
+  .s-meeting        { background: #f3e8ff; color: #7c3aed; }
+  .s-proposal       { background: #dbeafe; color: #1d4ed8; }
+  .s-partner        { background: #dcfce7; color: #15803d; }
+  .s-passed         { background: #fee2e2; color: #b91c1c; }
+
+  .icon-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: transparent; border: none; cursor: pointer;
+    color: #8fa8b8; border-radius: 5px; padding: 4px 6px;
+    font-size: 11px; font-weight: 600; font-family: var(--ha-font);
+    transition: background 0.12s, color 0.12s;
+  }
+  .icon-btn:hover { background: #eef4f8; color: var(--ha-navy); }
+  .icon-btn-danger:hover { background: #fde8e8; color: #c0392b; }
+
+  .add-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 600; font-family: var(--ha-font);
+    color: var(--ha-blue); background: transparent;
+    border: 1.5px dashed #a8c8df; border-radius: 8px;
+    padding: 9px 16px; cursor: pointer; margin-bottom: 18px;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+  }
+  .add-btn:hover { background: #f0f7fc; border-color: var(--ha-blue); color: var(--ha-navy); }
+
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ha-blue); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #dce6ed; }
+
+  .link-chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; color: var(--ha-navy);
+    background: var(--ha-light); border: 1px solid #cddae4;
+    border-radius: 5px; padding: 3px 8px; text-decoration: none;
+    transition: background 0.12s;
+  }
+  .link-chip:hover { background: #dde9f1; }
+
+  /* Overview market breakdown */
+  .market-breakdown { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+  .market-card { background: #fff; border-radius: 10px; border: 1px solid #dce6ed; padding: 18px 20px; box-shadow: 0 1px 4px rgba(28,58,74,0.07); }
+  .market-card-title { font-size: 13px; font-weight: 700; color: var(--ha-navy); margin-bottom: 10px; }
+  .market-stat-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px solid #f0f4f7; font-size: 12px; }
+  .market-stat-row:last-child { border-bottom: none; }
+  .market-stat-label { color: #6b7c88; }
+  .market-stat-val { font-weight: 700; color: var(--ha-navy); }
+
+  /* Modal */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+  .modal-form { background: #fff; border-radius: 12px; width: 100%; max-width: 520px; max-height: 90vh; display: flex; flex-direction: column; box-shadow: 0 8px 40px rgba(0,0,0,0.2); }
+  .modal-form-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px 16px; border-bottom: 1px solid #eef2f5; flex-shrink: 0; }
+  .modal-form-header h3 { font-size: 15px; font-weight: 700; color: var(--ha-navy); margin: 0; }
+  .modal-close-btn { background: none; border: none; font-size: 16px; color: #8fa8b8; cursor: pointer; padding: 2px 6px; border-radius: 4px; font-family: var(--ha-font); }
+  .modal-close-btn:hover { background: #eef4f8; color: var(--ha-navy); }
+  .modal-form-body { padding: 20px 24px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .mf-section { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--ha-blue); padding-top: 8px; border-top: 1px solid #eef2f5; margin-top: 4px; }
+  .mf-section:first-child { border-top: none; padding-top: 0; margin-top: 0; }
+  .mf-row { display: flex; flex-direction: column; gap: 4px; }
+  .mf-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; color: #6b7c88; }
+  .mf-input, .mf-select, .mf-textarea { padding: 8px 10px; border: 1.5px solid #D0DDE6; border-radius: 6px; font-family: var(--ha-font); font-size: 13px; color: var(--ha-navy); outline: none; background: #fff; width: 100%; }
+  .mf-input:focus, .mf-select:focus, .mf-textarea:focus { border-color: var(--ha-blue); }
+  .mf-textarea { resize: vertical; min-height: 72px; }
+  .modal-actions { padding: 16px 24px; border-top: 1px solid #eef2f5; flex-shrink: 0; display: flex; justify-content: flex-end; gap: 10px; }
+  .modal-cancel { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; border: 1.5px solid #D0DDE6; background: #fff; color: #6b7c88; cursor: pointer; font-family: var(--ha-font); }
+  .modal-save { padding: 8px 18px; border-radius: 6px; font-size: 13px; font-weight: 600; border: none; background: var(--ha-navy); color: #fff; cursor: pointer; font-family: var(--ha-font); }
+  .modal-save:hover { background: #254e66; }
+
+  .loading { text-align: center; padding: 60px; color: #8fa8b8; }
+  .loading-spinner { width: 32px; height: 32px; border: 3px solid #dce6ed; border-top-color: var(--ha-blue); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty { color: #aab8c2; font-size: 13px; padding: 32px; text-align: center; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="logo">
+    <div class="logo-mark">HA</div>
+    HouseAccount
+    <span class="header-sub">/ Outreach Tracker</span>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <a class="link-chip" href="/title-landing.html" target="_blank">Title Referral Page</a>
+    <a class="link-chip" href="/builder-landing.html" target="_blank">Builder Welcome Page</a>
+  </div>
+</header>
+
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="showTab('overview',this)">Overview</button>
+  <button class="tab-btn" onclick="showTab('title',this)">Title Companies</button>
+  <button class="tab-btn" onclick="showTab('builder',this)">Builders</button>
+</div>
+
+<div id="tab-overview" class="tab-panel active"><div class="loading"><div class="loading-spinner"></div>Loading…</div></div>
+<div id="tab-title"    class="tab-panel"><div class="loading"><div class="loading-spinner"></div>Loading…</div></div>
+<div id="tab-builder"  class="tab-panel"><div class="loading"><div class="loading-spinner"></div>Loading…</div></div>
+
+<script>
+let contactsData = [];
+
+const STATUSES = ['Not Started','Researching','Contacted','In Conversation','Meeting Scheduled','Proposal Sent','Partner','Passed'];
+const STATUS_CLS = {
+  'Not Started':     's-not-started',
+  'Researching':     's-researching',
+  'Contacted':       's-contacted',
+  'In Conversation': 's-in-conversation',
+  'Meeting Scheduled':'s-meeting',
+  'Proposal Sent':   's-proposal',
+  'Partner':         's-partner',
+  'Passed':          's-passed',
+};
+
+const iconEdit  = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M8.5 1.5l2 2-7 7H1.5v-2l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>`;
+const iconTrash = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M1.5 3h9M4.5 3V1.5h3V3M3 3l.75 7.5h4.5L9 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+const iconPlus  = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`;
+const iconLink  = `<svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M5 6a2.5 2.5 0 003.5.4l1.5-1.5A2.5 2.5 0 006.5 1.5L5.7 2.3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M7 6a2.5 2.5 0 00-3.5-.4L2 7.1A2.5 2.5 0 005.5 10.5l.8-.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>`;
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+async function apiGet(path) {
+  const r = await fetch(path); if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json();
+}
+async function apiPost(path, body) {
+  const r = await fetch(path, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  if (!r.ok) throw new Error(`HTTP ${r.status}: ${await r.text()}`); return r.json();
+}
+
+async function saveContact(c) {
+  const { contact } = await apiPost('/.netlify/functions/save-contact', c);
+  const idx = contactsData.findIndex(x => x.id === contact.id);
+  if (idx >= 0) contactsData[idx] = contact; else contactsData.push(contact);
+  return contact;
+}
+async function deleteContact(id) {
+  await apiPost('/.netlify/functions/delete-contact', { id });
+  contactsData = contactsData.filter(c => c.id !== id);
+}
+
+// ── Field schema ──────────────────────────────────────────────────
+const CONTACT_FIELDS = [
+  { section: 'Company' },
+  { key: 'type',         label: 'Type',           type: 'select', options: ['Title Company','Builder'], required: true },
+  { key: 'company',      label: 'Company Name',   type: 'text',   required: true },
+  { key: 'market',       label: 'Market',         type: 'select', options: ['TX','FL','NJ'],            required: true },
+  { key: 'website',      label: 'Website',        type: 'url' },
+  { section: 'Contact Person' },
+  { key: 'contactName',  label: 'Name',           type: 'text' },
+  { key: 'contactTitle', label: 'Title / Role',   type: 'text',   placeholder: 'e.g. VP of Operations' },
+  { key: 'linkedin',     label: 'LinkedIn URL',   type: 'url' },
+  { key: 'email',        label: 'Email',          type: 'email' },
+  { key: 'phone',        label: 'Phone',          type: 'text' },
+  { section: 'Outreach' },
+  { key: 'status',       label: 'Status',         type: 'select', options: STATUSES },
+  { key: 'lastContact',  label: 'Last Contact',   type: 'date' },
+  { key: 'notes',        label: 'Notes / Next Steps', type: 'textarea' },
+];
+
+function buildField(f, data) {
+  if (f.section) return `<div class="mf-section">${escHtml(f.section)}</div>`;
+  const v = (data && data[f.key]) || '';
+  const ph = f.placeholder ? `placeholder="${escHtml(f.placeholder)}"` : '';
+  const req = f.required ? 'required' : '';
+  if (f.type === 'textarea')
+    return `<div class="mf-row"><label class="mf-label">${escHtml(f.label)}</label><textarea class="mf-textarea" name="${escHtml(f.key)}" ${ph} rows="3">${escHtml(v)}</textarea></div>`;
+  if (f.type === 'select') {
+    const opts = f.options.map(o => `<option value="${escHtml(o)}" ${v===o?'selected':''}>${escHtml(o)||'—'}</option>`).join('');
+    return `<div class="mf-row"><label class="mf-label">${escHtml(f.label)}</label><select class="mf-select" name="${escHtml(f.key)}" ${req}>${opts}</select></div>`;
+  }
+  return `<div class="mf-row"><label class="mf-label">${escHtml(f.label)}${f.required?' <span style="color:#c0392b">*</span>':''}</label><input class="mf-input" type="${f.type}" name="${escHtml(f.key)}" value="${escHtml(v)}" ${ph} ${req}></div>`;
+}
+
+function openModal(title, data, onSave) {
+  document.querySelector('.modal-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-form">
+      <div class="modal-form-header">
+        <h3>${escHtml(title)}</h3>
+        <button class="modal-close-btn" type="button">✕</button>
+      </div>
+      <form class="modal-form-body" id="crud-form" onsubmit="return false">
+        ${CONTACT_FIELDS.map(f => buildField(f, data)).join('')}
+      </form>
+      <div class="modal-actions">
+        <button class="modal-cancel" type="button">Cancel</button>
+        <button class="modal-save" id="modal-save-btn" type="button">Save</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('.modal-close-btn').onclick = () => overlay.remove();
+  overlay.querySelector('.modal-cancel').onclick    = () => overlay.remove();
+  overlay.querySelector('#modal-save-btn').onclick  = async () => {
+    const form = overlay.querySelector('#crud-form');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    const formData = Object.fromEntries(new FormData(form));
+    const btn = overlay.querySelector('#modal-save-btn');
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try { await onSave(formData); overlay.remove(); }
+    catch(e) { btn.disabled = false; btn.textContent = 'Save'; alert(`Save failed: ${e.message}`); }
+  };
+}
+
+// ── Status pill ───────────────────────────────────────────────────
+function statusPill(status, cid) {
+  return `<button class="status-pill ${STATUS_CLS[status]||'s-not-started'}" data-cid="${escHtml(cid)}" title="Click to change status">${escHtml(status||'Not Started')}</button>`;
+}
+
+// ── Table row ─────────────────────────────────────────────────────
+function contactRow(c) {
+  const linkedin = c.linkedin ? `<a class="link-chip" href="${escHtml(c.linkedin)}" target="_blank" rel="noopener" style="margin-left:4px;">${iconLink}</a>` : '';
+  const website  = c.website  ? `<a class="link-chip" href="${escHtml(c.website)}"  target="_blank" rel="noopener" style="margin-left:2px;">↗</a>` : '';
+  return `<tr data-cid="${escHtml(c.id||'')}">
+    <td><div class="td-company">${escHtml(c.company)}${website}</div></td>
+    <td><span class="market-badge market-${escHtml(c.market)}">${escHtml(c.market)}</span></td>
+    <td><div class="td-contact">${c.contactName ? escHtml(c.contactName)+linkedin : '<span style="color:#aab8c2">—</span>'}
+      ${c.contactTitle ? `<div class="td-contact-title">${escHtml(c.contactTitle)}</div>` : ''}</div></td>
+    <td>${statusPill(c.status, c.id)}</td>
+    <td class="td-date">${c.lastContact ? new Date(c.lastContact).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '<span style="color:#aab8c2">—</span>'}</td>
+    <td class="td-notes">${c.notes ? `<span title="${escHtml(c.notes)}">${escHtml(c.notes.length>80?c.notes.slice(0,80)+'…':c.notes)}</span>` : ''}</td>
+    <td class="td-actions">
+      <button class="icon-btn edit-btn" data-cid="${escHtml(c.id||'')}" title="Edit">${iconEdit}</button>
+      <button class="icon-btn icon-btn-danger delete-btn" data-cid="${escHtml(c.id||'')}" title="Delete">${iconTrash}</button>
+    </td>
+  </tr>`;
+}
+
+function contactTable(contacts) {
+  if (!contacts.length) return `<div class="empty">No contacts yet — add one above.</div>`;
+  return `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>Company</th><th>Market</th><th>Contact</th><th>Status</th><th>Last Contact</th><th>Notes / Next Steps</th><th></th>
+    </tr></thead>
+    <tbody>${contacts.map(contactRow).join('')}</tbody>
+  </table></div>`;
+}
+
+// ── Market filter state ───────────────────────────────────────────
+let titleMarket   = 'All';
+let builderMarket = 'All';
+
+function marketFilter(current, tabId) {
+  return ['All','TX','FL','NJ'].map(m =>
+    `<button class="mf-btn ${current===m?'active':''}" onclick="setMarket('${m}','${tabId}')">${m}</button>`
+  ).join('');
+}
+function setMarket(m, tabId) {
+  if (tabId === 'title') titleMarket = m;
+  else builderMarket = m;
+  renderAll();
+}
+
+// ── Overview ──────────────────────────────────────────────────────
+function renderOverview() {
+  const total = contactsData.length;
+  const partners   = contactsData.filter(c => c.status === 'Partner').length;
+  const inProgress = contactsData.filter(c => !['Not Started','Passed','Partner'].includes(c.status)).length;
+  const meetings   = contactsData.filter(c => c.status === 'Meeting Scheduled').length;
+  const notStarted = contactsData.filter(c => c.status === 'Not Started').length;
+
+  const stageCounts = {};
+  STATUSES.forEach(s => stageCounts[s] = contactsData.filter(c => c.status === s).length);
+
+  const stats = `<div class="stats-row">
+    <div class="stat-card"><div class="stat-number">${total}</div><div class="stat-label">Total Targets</div></div>
+    <div class="stat-card"><div class="stat-number" style="color:#b45309">${notStarted}</div><div class="stat-label">Not Started</div></div>
+    <div class="stat-card"><div class="stat-number" style="color:#7c3aed">${meetings}</div><div class="stat-label">Meetings Scheduled</div></div>
+    <div class="stat-card"><div class="stat-number" style="color:#1d4ed8">${inProgress}</div><div class="stat-label">In Progress</div></div>
+    <div class="stat-card"><div class="stat-number" style="color:#15803d">${partners}</div><div class="stat-label">Partners Won</div></div>
+  </div>`;
+
+  const pipeline = `<div class="pipeline-section">
+    <div class="pipeline-title">Pipeline Stages</div>
+    <div class="pipeline-stages">
+      ${STATUSES.map(s => `<div class="pipeline-stage">
+        <div class="pipeline-stage-count">${stageCounts[s]}</div>
+        <div class="pipeline-stage-label">${s}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+
+  const markets = ['TX','FL','NJ'].map(m => {
+    const mc = contactsData.filter(c => c.market === m);
+    const tc = mc.filter(c => c.type === 'Title Company');
+    const bl = mc.filter(c => c.type === 'Builder');
+    const won = mc.filter(c => c.status === 'Partner').length;
+    const active = mc.filter(c => !['Not Started','Passed'].includes(c.status)).length;
+    return `<div class="market-card">
+      <div class="market-card-title"><span class="market-badge market-${m}" style="margin-right:6px;">${m}</span></div>
+      <div class="market-stat-row"><span class="market-stat-label">Title Companies</span><span class="market-stat-val">${tc.length}</span></div>
+      <div class="market-stat-row"><span class="market-stat-label">Builders</span><span class="market-stat-val">${bl.length}</span></div>
+      <div class="market-stat-row"><span class="market-stat-label">Active Outreach</span><span class="market-stat-val">${active}</span></div>
+      <div class="market-stat-row"><span class="market-stat-label">Partners Won</span><span class="market-stat-val" style="color:#15803d">${won}</span></div>
+    </div>`;
+  }).join('');
+
+  return stats + pipeline + `<div class="section-label">By Market</div><div class="market-breakdown">${markets}</div>`;
+}
+
+// ── Category tabs ─────────────────────────────────────────────────
+function renderCategory(type, market) {
+  const all = contactsData.filter(c => c.type === type);
+  const filtered = market === 'All' ? all : all.filter(c => c.market === market);
+  const mf = market === 'All' ? titleMarket : builderMarket;
+  const tabId = type === 'Title Company' ? 'title' : 'builder';
+  return `
+    <button class="add-btn add-contact-btn" data-type="${escHtml(type)}">${iconPlus} Add ${type}</button>
+    <div class="market-filter">${marketFilter(market, tabId)}</div>
+    ${contactTable(filtered)}`;
+}
+
+// ── Render all ────────────────────────────────────────────────────
+function renderAll() {
+  document.getElementById('tab-overview').innerHTML = renderOverview();
+  document.getElementById('tab-title').innerHTML   = renderCategory('Title Company', titleMarket);
+  document.getElementById('tab-builder').innerHTML = renderCategory('Builder', builderMarket);
+}
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Status cycle modal ────────────────────────────────────────────
+function openStatusModal(cid) {
+  const c = contactsData.find(x => x.id === cid);
+  if (!c) return;
+  document.querySelector('.modal-overlay')?.remove();
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-form" style="max-width:360px;">
+      <div class="modal-form-header">
+        <h3>Update Status</h3>
+        <button class="modal-close-btn" type="button">✕</button>
+      </div>
+      <div class="modal-form-body" style="gap:8px;">
+        <div style="font-size:13px;font-weight:600;color:var(--ha-navy);margin-bottom:4px;">${escHtml(c.company)}</div>
+        ${STATUSES.map(s => `<button class="status-pill ${STATUS_CLS[s]} status-choice" data-status="${escHtml(s)}" style="width:100%;justify-content:center;padding:8px 0;font-size:13px;">${escHtml(s)}</button>`).join('')}
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  overlay.querySelector('.modal-close-btn').onclick = () => overlay.remove();
+  overlay.querySelectorAll('.status-choice').forEach(btn => {
+    btn.onclick = async () => {
+      const newStatus = btn.getAttribute('data-status');
+      btn.disabled = true;
+      try {
+        const today = new Date().toISOString().split('T')[0];
+        await saveContact({ ...c, status: newStatus, lastContact: today });
+        overlay.remove();
+        renderAll();
+      } catch(e) { alert(`Save failed: ${e.message}`); btn.disabled = false; }
+    };
+  });
+}
+
+// ── Event delegation ──────────────────────────────────────────────
+document.addEventListener('click', async e => {
+  // Add contact
+  const addBtn = e.target.closest('.add-contact-btn');
+  if (addBtn) {
+    const type = addBtn.getAttribute('data-type');
+    openModal(`Add ${type}`, { type, status: 'Not Started' }, async data => {
+      await saveContact(data);
+      renderAll();
+    });
+    return;
+  }
+
+  // Edit contact
+  const editBtn = e.target.closest('.edit-btn');
+  if (editBtn) {
+    const cid = editBtn.getAttribute('data-cid');
+    const c   = contactsData.find(x => x.id === cid);
+    if (!c) return;
+    openModal(`Edit: ${c.company}`, c, async data => {
+      await saveContact({ ...c, ...data });
+      renderAll();
+    });
+    return;
+  }
+
+  // Delete contact
+  const deleteBtn = e.target.closest('.delete-btn');
+  if (deleteBtn) {
+    const cid = deleteBtn.getAttribute('data-cid');
+    const c   = contactsData.find(x => x.id === cid);
+    if (!c || !confirm(`Delete "${c.company}"?`)) return;
+    deleteBtn.disabled = true;
+    try { await deleteContact(cid); renderAll(); }
+    catch(err) { alert(`Delete failed: ${err.message}`); deleteBtn.disabled = false; }
+    return;
+  }
+
+  // Status pill
+  const pill = e.target.closest('.status-pill[data-cid]');
+  if (pill) { openStatusModal(pill.getAttribute('data-cid')); return; }
+});
+
+// ── Load ──────────────────────────────────────────────────────────
+async function load() {
+  try {
+    contactsData = await apiGet('/.netlify/functions/get-contacts');
+    renderAll();
+  } catch(err) {
+    ['overview','title','builder'].forEach(t => {
+      document.getElementById('tab-'+t).innerHTML = `<div style="color:#c0392b;padding:40px;text-align:center;">Failed to load: ${err.message}</div>`;
+    });
+  }
+}
+
+load();
+</script>
+</body>
+</html>
