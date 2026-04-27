@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Welcome Home Gift — HouseAccount</title>
+<title>Manage Your Home Smarter — HouseAccount</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root { --navy:#1C3A4A; --blue:#6B9FBF; --light:#EEF4F8; }
-  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
   body { font-family:'Inter',system-ui,sans-serif; background:var(--light); color:#1a2a34; min-height:100vh; }
 
   nav { background:var(--navy); padding:16px 24px; display:flex; align-items:center; gap:10px; }
@@ -17,7 +17,7 @@
   .hero { background:var(--navy); color:#fff; text-align:center; padding:56px 24px 48px; }
   .hero-eyebrow { font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);margin-bottom:14px; }
   .hero h1 { font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.2;margin-bottom:14px; }
-  .hero p { font-size:16px;color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto; }
+  .hero p { font-size:16px;color:rgba(255,255,255,0.75);max-width:500px;margin:0 auto; }
 
   .card-wrap { max-width:520px;margin:-32px auto 48px;padding:0 20px; }
   .card { background:#fff;border-radius:14px;box-shadow:0 8px 40px rgba(28,58,74,0.14);padding:36px 32px; }
@@ -60,15 +60,15 @@
 
 <div class="hero">
   <div class="hero-eyebrow">A welcome gift included with your new home</div>
-  <h1>Your Home, Ready From Day One</h1>
-  <p>Claim your complimentary home setup service — included as part of your new home purchase. Takes 30 seconds to redeem.</p>
+  <h1>Your Home Deserves the Best — We'll Help You Find It</h1>
+  <p>Get complimentary access to HouseAccount — vetted home service providers, one platform, zero guesswork. Included as part of your new home purchase.</p>
 </div>
 
 <div class="card-wrap">
   <div class="card">
     <div class="offer-banner">
-      <p>🏠 Free TV mount installation — included with your home</p>
-      <span>Courtesy of your builder & HouseAccount. Schedule anytime after move-in.</span>
+      <p>🏠 Complimentary HouseAccount membership</p>
+      <span>Quality providers, one place to manage everything — included with your home.</span>
     </div>
 
     <form name="builder-claim" id="claim-form" method="POST" data-netlify="true" onsubmit="handleSubmit(event)">
@@ -95,18 +95,18 @@
         <input type="text" id="community" name="community" placeholder="e.g. Lennar — Waterstone" required>
       </div>
 
-      <button type="submit" class="submit-btn" id="submit-btn">Claim My Welcome Gift →</button>
-      <p class="fine-print">We'll reach out within 1 business day to schedule. No spam, ever.</p>
+      <button type="submit" class="submit-btn" id="submit-btn">Get My Free Access →</button>
+      <p class="fine-print">We'll be in touch within 1 business day. No spam, ever.</p>
     </form>
   </div>
 </div>
 
 <div class="perks">
-  <div class="perks-title">What's included</div>
+  <div class="perks-title">What you get with HouseAccount</div>
   <div class="perks-grid">
-    <div class="perk"><div class="perk-icon">📺</div><h4>TV Mount Install</h4><p>Professional wall mount for any TV up to 55"</p></div>
-    <div class="perk"><div class="perk-icon">📅</div><h4>Flexible Scheduling</h4><p>Book anytime after your move-in date</p></div>
-    <div class="perk"><div class="perk-icon">✅</div><h4>No Hidden Fees</h4><p>Completely complimentary — included with your home</p></div>
+    <div class="perk"><div class="perk-icon">⭐</div><h4>Vetted Providers</h4><p>Quality, background-checked home service pros you can trust</p></div>
+    <div class="perk"><div class="perk-icon">📋</div><h4>One Place for Everything</h4><p>Book, track, and manage all your home services in one app</p></div>
+    <div class="perk"><div class="perk-icon">🏠</div><h4>Built for Homeowners</h4><p>From move-in day through every season of ownership</p></div>
   </div>
 </div>
 
@@ -127,11 +127,11 @@ async function handleSubmit(e) {
     if (!resp.ok) throw new Error('Submission failed');
     form.innerHTML = `<div class="success">
       <div class="success-icon">🎉</div>
-      <h2>Welcome home!</h2>
-      <p>We'll be in touch within 1 business day to schedule your complimentary install.</p>
+      <h2>Welcome to HouseAccount!</h2>
+      <p>We'll reach out within 1 business day to get you set up.</p>
     </div>`;
   } catch(err) {
-    btn.disabled = false; btn.textContent = 'Claim My Welcome Gift →';
+    btn.disabled = false; btn.textContent = 'Get My Free Access →';
     alert('Something went wrong. Please try again.');
   }
 }

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your New Home Welcome Gift — HouseAccount</title>
+<title>Manage Your Home Smarter — HouseAccount</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root { --navy:#1C3A4A; --blue:#6B9FBF; --light:#EEF4F8; }
@@ -17,7 +17,7 @@
   .hero { background:var(--navy); color:#fff; text-align:center; padding:56px 24px 48px; }
   .hero-eyebrow { font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--blue);margin-bottom:14px; }
   .hero h1 { font-size:clamp(26px,5vw,40px);font-weight:800;line-height:1.2;margin-bottom:14px; }
-  .hero p { font-size:16px;color:rgba(255,255,255,0.75);max-width:480px;margin:0 auto; }
+  .hero p { font-size:16px;color:rgba(255,255,255,0.75);max-width:500px;margin:0 auto; }
 
   .card-wrap { max-width:520px;margin:-32px auto 48px;padding:0 20px; }
   .card { background:#fff;border-radius:14px;box-shadow:0 8px 40px rgba(28,58,74,0.14);padding:36px 32px; }
@@ -34,18 +34,17 @@
   .submit-btn { width:100%;padding:14px;background:var(--navy);color:#fff;font-family:inherit;font-size:15px;font-weight:700;border:none;border-radius:8px;cursor:pointer;margin-top:8px;transition:background 0.15s; }
   .submit-btn:hover { background:#254e66; }
   .submit-btn:disabled { opacity:0.6;cursor:not-allowed; }
-
   .fine-print { font-size:11px;color:#aab8c2;text-align:center;margin-top:12px; }
 
-  .steps { max-width:560px;margin:0 auto 56px;padding:0 20px; }
-  .steps-title { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);text-align:center;margin-bottom:20px; }
-  .steps-grid { display:flex;gap:16px;flex-wrap:wrap; }
-  .step { flex:1;min-width:140px;background:#fff;border-radius:10px;border:1px solid #dce6ed;padding:18px;text-align:center; }
-  .step-num { width:32px;height:32px;background:var(--navy);color:#fff;border-radius:50%;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px; }
-  .step p { font-size:12px;color:#6b7c88; }
+  .perks { max-width:560px;margin:0 auto 56px;padding:0 20px; }
+  .perks-title { font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--blue);text-align:center;margin-bottom:20px; }
+  .perks-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px; }
+  .perk { background:#fff;border-radius:10px;border:1px solid #dce6ed;padding:18px;text-align:center; }
+  .perk-icon { font-size:28px;margin-bottom:8px; }
+  .perk h4 { font-size:13px;font-weight:700;color:var(--navy);margin-bottom:4px; }
+  .perk p { font-size:12px;color:#6b7c88; }
 
   footer { background:var(--navy);color:rgba(255,255,255,0.5);text-align:center;padding:20px;font-size:12px; }
-
   .success { text-align:center;padding:32px 0; }
   .success-icon { font-size:48px;margin-bottom:16px; }
   .success h2 { font-size:22px;font-weight:800;color:var(--navy);margin-bottom:8px; }
@@ -60,16 +59,16 @@
 </nav>
 
 <div class="hero">
-  <div class="hero-eyebrow">A welcome gift from your title company & HouseAccount</div>
-  <h1>Claim Your Free TV Mount Installation</h1>
-  <p>Congratulations on your new home. Fill out the form below and we'll reach out within 1 business day to schedule your complimentary install.</p>
+  <div class="hero-eyebrow">A welcome gift from your title company</div>
+  <h1>Your New Home, Expertly Managed</h1>
+  <p>Get complimentary access to HouseAccount — the smarter way to find trusted home service providers and manage everything your home needs, all in one place.</p>
 </div>
 
 <div class="card-wrap">
   <div class="card">
     <div class="offer-banner">
-      <p>🎁 Free TV mount installation — up to 55"</p>
-      <span>Included with your home purchase. No catch.</span>
+      <p>🏠 Complimentary HouseAccount membership</p>
+      <span>Vetted providers, one platform, zero guesswork — included with your closing.</span>
     </div>
 
     <form name="title-claim" id="claim-form" method="POST" data-netlify="true" onsubmit="handleSubmit(event)">
@@ -96,18 +95,18 @@
         <input type="text" id="title_company" name="title_company" placeholder="e.g. First American Title" required>
       </div>
 
-      <button type="submit" class="submit-btn" id="submit-btn">Claim My Free Install →</button>
-      <p class="fine-print">We'll text or call within 1 business day. No spam, ever.</p>
+      <button type="submit" class="submit-btn" id="submit-btn">Get My Free Access →</button>
+      <p class="fine-print">We'll be in touch within 1 business day. No spam, ever.</p>
     </form>
   </div>
 </div>
 
-<div class="steps">
-  <div class="steps-title">How It Works</div>
-  <div class="steps-grid">
-    <div class="step"><div class="step-num">1</div><p>Fill out the form above with your new home address</p></div>
-    <div class="step"><div class="step-num">2</div><p>We reach out within 1 business day to schedule</p></div>
-    <div class="step"><div class="step-num">3</div><p>A HouseAccount pro installs your TV mount — for free</p></div>
+<div class="perks">
+  <div class="perks-title">What you get with HouseAccount</div>
+  <div class="perks-grid">
+    <div class="perk"><div class="perk-icon">⭐</div><h4>Vetted Providers</h4><p>Only quality, background-checked home service pros</p></div>
+    <div class="perk"><div class="perk-icon">📋</div><h4>One Place for Everything</h4><p>Book, track, and manage all your home services in one app</p></div>
+    <div class="perk"><div class="perk-icon">🏠</div><h4>Built for Homeowners</h4><p>From move-in day through every season of ownership</p></div>
   </div>
 </div>
 
@@ -128,11 +127,11 @@ async function handleSubmit(e) {
     if (!resp.ok) throw new Error('Submission failed');
     form.innerHTML = `<div class="success">
       <div class="success-icon">🎉</div>
-      <h2>You're all set!</h2>
-      <p>We'll be in touch within 1 business day to schedule your free install.</p>
+      <h2>Welcome to HouseAccount!</h2>
+      <p>We'll reach out within 1 business day to get you set up.</p>
     </div>`;
   } catch(err) {
-    btn.disabled = false; btn.textContent = 'Claim My Free Install →';
+    btn.disabled = false; btn.textContent = 'Get My Free Access →';
     alert('Something went wrong. Please try again.');
   }
 }
